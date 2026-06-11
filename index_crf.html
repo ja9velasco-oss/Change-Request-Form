@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+    <head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>PTC Change Portal | Change Request Form</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#434654",
+                        "inverse-on-surface": "#edf0ff",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-fixed": "#101c2d",
+                        "secondary-fixed": "#d7e3fb",
+                        "outline-variant": "#c3c6d6",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#3c454d",
+                        "background": "#f9f9ff",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#cadaff",
+                        "primary": "#003d9b",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#0c56d0",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "primary-fixed": "#dae2ff",
+                        "on-tertiary-fixed": "#141c24",
+                        "secondary-fixed-dim": "#bbc7de",
+                        "inverse-primary": "#b2c5ff",
+                        "secondary": "#535f73",
+                        "on-secondary-fixed-variant": "#3b475b",
+                        "on-tertiary-container": "#cbd4df",
+                        "on-secondary-container": "#576377",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e0e8ff",
+                        "on-primary-container": "#c4d2ff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "primary-container": "#0052cc",
+                        "on-primary-fixed": "#001848",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#1d3052",
+                        "on-surface": "#041b3c",
+                        "tertiary-fixed": "#dae3ee",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#d4e0f8",
+                        "surface-container-low": "#f1f3ff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#bec7d2",
+                        "surface-variant": "#d7e2ff",
+                        "surface-container": "#e8edff",
+                        "on-tertiary-fixed-variant": "#3f4850",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#d7e2ff",
+                        "outline": "#737685",
+                        "surface": "#f9f9ff",
+                        "tertiary-container": "#535c65",
+                        "on-background": "#041b3c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-lg": "24px",
+                        "stack-md": "16px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "stack-xs": "4px",
+                        "max-width": "1200px",
+                        "stack-sm": "8px",
+                        "gutter": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f3ff; }
+        ::-webkit-scrollbar-thumb { background: #c3c6d6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #737685; }
+        
+        .form-input-focus:focus {
+            outline: none;
+            border-color: #003d9b;
+            box-shadow: 0 0 0 4px rgba(0, 61, 155, 0.1);
+        }
+        
+        .section-card {
+            transition: box-shadow 0.3s ease;
+        }
+        .section-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 61, 155, 0.05), 0 8px 10px -6px rgba(0, 61, 155, 0.05);
+        }
+
+        .sig-preview-wrap {
+            position: relative;
+            margin-top: 4px;
+            border: 2px dashed #c3c6d6;
+            border-radius: 0.75rem;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            overflow: hidden;
+        }
+        .sig-preview-wrap img {
+            max-width: 100%;
+            max-height: 80px;
+            display: block;
+        }
+        .sig-placeholder {
+            font-size: 10px;
+            color: #737685;
+            font-style: italic;
+            padding: 10px;
+            text-align: center;
+        }
+        .sig-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #003d9b;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+        .sig-upload-btn input[type=file] { display: none; }
+        .sig-clear-btn {
+            display: none;
+            background: #ba1a1a;
+            color: white;
+            padding: 4px 10px;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .signatory-line {
+            border-top: 1px solid #737685;
+            margin-top: 10px;
+            padding-top: 6px;
+            text-align: center;
+            font-size: 10px;
+            color: #434654;
+        }
+        #final-approval fieldset {
+            min-width: 0;
+        }
+        .file-drop-zone.drag-over {
+            border-color: #003d9b;
+            background: rgba(0, 61, 155, 0.12);
+        }
+        @media print {
+            header,
+            aside,
+            footer,
+            .sticky,
+            .no-print {
+                display: none !important;
+            }
+            body,
+            main,
+            section {
+                background: #ffffff !important;
+            }
+            main {
+                margin: 0 !important;
+            }
+            .section-card {
+                box-shadow: none !important;
+                border-color: #d1d5db !important;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 z-50 h-16 bg-surface-container-lowest border-b border-outline-variant flex items-center shadow-sm">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-max-width mx-auto">
+<div class="flex items-center gap-gutter">
+<span class="text-headline-md font-headline-md text-primary tracking-tight">PTC Change Portal</span>
+<nav class="hidden md:flex gap-8 ml-8">
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">Dashboard</a>
+<a class="text-primary border-b-2 border-primary pb-1 font-bold text-label-md font-label-md" href="#">Change Requests</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">Resources</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full transition-colors">help</button>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg text-label-md font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95">Submit New CR</button>
+</div>
+</div>
+</header>
+<div class="flex pt-16 min-h-screen">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col w-72 bg-surface-container-low border-r border-outline-variant fixed left-0 h-full py-stack-lg overflow-y-auto">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-4 bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/50">
+<div class="w-12 h-12 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container shadow-sm">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">description</span>
+</div>
+<div>
+<div class="text-headline-sm font-bold text-primary">PTC-CRF-001</div>
+<div class="text-label-sm font-medium text-on-surface-variant uppercase tracking-wider">Revision 3.0</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1.5">
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3.5 hover:bg-primary-container/30 hover:text-primary rounded-xl transition-all group" href="#request-info">
+<span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">info</span>
+<span class="text-label-md font-semibold">Request Info</span>
+</a>
+<a class="flex items-center gap-4 bg-primary text-on-primary shadow-md shadow-primary/20 rounded-xl px-4 py-3.5" href="#change-summary">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="text-label-md font-bold">Change Summary</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3.5 hover:bg-primary-container/30 hover:text-primary rounded-xl transition-all group" href="#scope-assessment">
+<span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">checklist</span>
+<span class="text-label-md font-semibold">Scope Assessment</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3.5 hover:bg-primary-container/30 hover:text-primary rounded-xl transition-all group" href="#business-justification">
+<span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">assignment</span>
+<span class="text-label-md font-semibold">Business Justification</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3.5 hover:bg-primary-container/30 hover:text-primary rounded-xl transition-all group" href="#final-approval">
+<span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">fact_check</span>
+<span class="text-label-md font-semibold">Final Approval</span>
+</a>
+</nav>
+<div class="mt-auto px-4 py-stack-lg space-y-1 border-t border-outline-variant/30">
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl text-label-md font-semibold transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span> Settings
+                </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl text-label-md font-semibold transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">contact_support</span> Support
+                </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-72 bg-background">
+<div class="max-w-[1000px] mx-auto p-margin-desktop py-14">
+<!-- Page Header -->
+<div class="mb-14 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+<div>
+<h1 class="text-display-lg font-display-lg text-primary mb-3">Change Request Form</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl leading-relaxed">Formal document for tracking and managing requests for system enhancements, customizations, and modifications.</p>
+</div>
+<div class="shrink-0">
+<div class="bg-primary-container/20 px-6 py-3 rounded-2xl border border-primary/20 flex flex-col items-end">
+<span class="text-label-sm font-bold text-primary/60 uppercase tracking-widest mb-1">FORM STATUS</span>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-primary rounded-full animate-pulse"></span>
+<div class="text-headline-sm font-bold text-primary">DRAFT IN PROGRESS</div>
+</div>
+</div>
+</div>
+</div>
+<form class="space-y-12" id="change-request-form">
+<!-- SECTION 1: REQUEST INFORMATION -->
+<section class="bg-surface-container-lowest p-10 rounded-3xl border border-outline-variant/60 shadow-sm section-card" id="request-info">
+<div class="flex items-center gap-5 mb-10">
+<h2 class="text-headline-md font-bold text-on-surface whitespace-nowrap">SECTION 1 — REQUEST INFORMATION</h2>
+<div class="h-px bg-outline-variant/50 flex-grow"></div>
+</div>
+<div class="grid grid-cols-12 gap-x-8 gap-y-10">
+<div class="col-span-12 md:col-span-4">
+<label class="block text-label-md font-bold text-on-surface mb-2">Request No.</label>
+<input class="w-full border-outline-variant rounded-xl text-body-md font-medium px-4 py-3 form-input-focus" type="text" id="req_no" value="PTC-CRF-2024-089">
+</div>
+<div class="col-span-12 md:col-span-4">
+<label class="block text-label-md font-bold text-on-surface mb-2">Date Submitted</label>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" type="date" id="date_submitted">
+</div>
+<div class="col-span-12 md:col-span-4">
+<label class="block text-label-md font-bold text-on-surface mb-2">Target Completion Date</label>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" type="date" id="target_completion">
+</div>
+<div class="col-span-12 md:col-span-6">
+<label class="block text-label-md font-bold text-on-surface mb-2">Client / Institution</label>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Enter institution name" type="text" id="client_institution">
+</div>
+<div class="col-span-12 md:col-span-6">
+<label class="block text-label-md font-bold text-on-surface mb-2">Project / System Name</label>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="e.g. PRIISMS Core" type="text" id="project_name">
+</div>
+<div class="col-span-12 md:col-span-6">
+<label class="block text-label-md font-bold text-on-surface mb-2">Requested By</label>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Full name of requester" type="text" id="requested_by">
+</div>
+<div class="col-span-12 md:col-span-6">
+<label class="block text-label-md font-bold text-on-surface mb-2">Department / Office</label>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Originating department" type="text" id="department">
+</div>
+<div class="col-span-12">
+<label class="block text-label-md font-bold text-on-surface mb-3">Priority Level</label>
+<div class="flex p-1.5 bg-surface-container-low rounded-2xl border border-outline-variant/40 gap-1">
+<label class="flex-1">
+<input class="hidden peer" name="priority" type="radio">
+<div class="flex items-center justify-center h-12 rounded-xl cursor-pointer transition-all peer-checked:bg-error peer-checked:text-on-error peer-checked:shadow-lg peer-checked:shadow-error/20 hover:bg-surface-container-high font-bold text-label-md text-on-surface-variant">Critical</div>
+</label>
+<label class="flex-1">
+<input checked="" class="hidden peer" name="priority" type="radio">
+<div class="flex items-center justify-center h-12 rounded-xl cursor-pointer transition-all peer-checked:bg-primary peer-checked:text-on-primary peer-checked:shadow-lg peer-checked:shadow-primary/20 hover:bg-surface-container-high font-bold text-label-md text-on-surface-variant">High</div>
+</label>
+<label class="flex-1">
+<input class="hidden peer" name="priority" type="radio">
+<div class="flex items-center justify-center h-12 rounded-xl cursor-pointer transition-all peer-checked:bg-secondary peer-checked:text-on-secondary peer-checked:shadow-lg peer-checked:shadow-secondary/20 hover:bg-surface-container-high font-bold text-label-md text-on-surface-variant">Medium</div>
+</label>
+<label class="flex-1">
+<input class="hidden peer" name="priority" type="radio">
+<div class="flex items-center justify-center h-12 rounded-xl cursor-pointer transition-all peer-checked:bg-outline peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-outline/20 hover:bg-surface-container-high font-bold text-label-md text-on-surface-variant">Low</div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: CHANGE REQUEST SUMMARY -->
+<section class="bg-surface-container-lowest p-10 rounded-3xl border border-outline-variant/60 shadow-sm section-card" id="change-summary">
+<div class="flex items-center gap-5 mb-10">
+<h2 class="text-headline-md font-bold text-on-surface whitespace-nowrap">SECTION 2 — CHANGE REQUEST SUMMARY</h2>
+<div class="h-px bg-outline-variant/50 flex-grow"></div>
+</div>
+<div class="space-y-8">
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">Title of Request</label>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Enter a concise title for this change" type="text" id="cr_title">
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">Summary of Requested Enhancement / Change</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Provide a high-level description..." rows="3" id="cr_summary"></textarea>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">Reason for Request</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Why is this being requested now?" rows="3" id="cr_reason"></textarea>
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">Requested Business Outcome</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="What is the expected impact?" rows="3" id="cr_outcome"></textarea>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: SCOPE ASSESSMENT -->
+<section class="bg-surface-container-lowest p-10 rounded-3xl border border-outline-variant/60 shadow-sm section-card" id="scope-assessment">
+<div class="flex items-center gap-5 mb-10">
+<h2 class="text-headline-md font-bold text-on-surface whitespace-nowrap">SECTION 3 — SCOPE ASSESSMENT</h2>
+<div class="h-px bg-outline-variant/50 flex-grow"></div>
+</div>
+<div class="grid grid-cols-12 gap-10">
+<!-- Type of Request -->
+<div class="col-span-12 lg:col-span-5 bg-surface-container-low/60 p-6 rounded-2xl border border-outline-variant/40" id="request-type-group">
+<h3 class="text-label-md font-bold text-primary mb-6 border-b border-primary/10 pb-3 uppercase tracking-wider flex items-center gap-2">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+                                    A. TYPE OF REQUEST
+                                </h3>
+<div class="grid grid-cols-1 gap-4">
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer request-type-cb" type="checkbox" data-label="New Feature">
+<span class="group-hover:text-primary transition-colors">New Feature</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer request-type-cb" type="checkbox" data-label="Enhancement">
+<span class="group-hover:text-primary transition-colors">Enhancement</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Revision / Modification</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Integration Requirement</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Data Correction</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Workflow Adjustment</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Report Customization</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">UI/Layout Update</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Configuration Update</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant transition-all cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Others</span>
+</label>
+</div>
+</div>
+<!-- Affected Modules -->
+<div class="col-span-12 lg:col-span-7 bg-surface-container-low/60 p-6 rounded-2xl border border-outline-variant/40" id="modules-group">
+<h3 class="text-label-md font-bold text-primary mb-6 border-b border-primary/10 pb-3 uppercase tracking-wider flex items-center gap-2">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+                                    B. AFFECTED PRIISMS MODULES
+                                </h3>
+<div class="grid grid-cols-2 gap-4">
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Dashboard Module</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Event Module</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Requirement Setup</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Schedule Management</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Academic Module</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Configuration Modules</span>
+</label><label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Security Management</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Financial Assistance Module</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Faculty Portal</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Online Enrollment</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Report Generation</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Cloud / AWS Infrastructure</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Functional Scope</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Profile Module</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Admission Module</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Admission Limit</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Registrar / Student Center</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Enrollment / Registration</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Setup Manager</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Accounting & Cashiering</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">UNIFAST Module</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Student / Parent Portal</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Grading System</span>
+</label>
+<label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
+<input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
+<span class="group-hover:text-primary transition-colors">API Integration</span>
+</label>
+</div>
+</div>
+<!-- Detailed Scope -->
+<div class="col-span-12 space-y-10 mt-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">C. Functional Scope</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Describe requested functionality, workflows, validations, or enhancements..." rows="4" id="functional_scope"></textarea>
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">D. Technical Components / Integrations</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Specify APIs, payment gateways, reports, or external systems involved." rows="4" id="technical_components"></textarea>
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">E. Reports / Output Affected</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Identify forms, reports, templates, exports, dashboards, or printouts affected." rows="4" id="reports_affected"></textarea>
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">F. User Access / Stakeholders Affected</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Identify forms, reports, templates, exports, dashboards, or printouts affected." rows="4" id="stakeholders_affected"></textarea>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-1 gap-10">
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">G. Risks / Dependencies</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Operational, schedule, or technical risks..." rows="4" id="risks_dependencies"></textarea>
+</div>
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">H. Supporting References / Attachments</label>
+<button class="w-full h-[120px] border-2 border-dashed border-primary/20 bg-primary/5 rounded-2xl flex flex-col items-center justify-center text-primary hover:bg-primary/10 hover:border-primary/40 transition-all cursor-pointer group file-drop-zone" id="supporting-attachments-trigger" type="button">
+<span class="material-symbols-outlined text-[32px] group-hover:-translate-y-1 transition-transform">cloud_upload</span>
+<span class="text-label-md font-bold mt-2" id="supporting-attachments-title">Click to upload or drag files here</span>
+<span class="text-[10px] text-on-surface-variant font-medium mt-1 uppercase tracking-tighter">MAX FILE SIZE 10MB</span>
+</button>
+<input class="hidden" id="supporting-attachments-input" type="file" multiple>
+<p class="text-label-sm text-on-surface-variant mt-3" id="supporting-attachments-list">No files selected.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4 & 5: BUSINESS JUSTIFICATION & DELIVERABLES -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+<section class="bg-surface-container-lowest p-10 rounded-3xl border border-outline-variant/60 shadow-sm section-card" id="business-justification">
+<div class="flex items-center gap-5 mb-10">
+<h2 class="text-headline-md font-bold text-on-surface whitespace-nowrap">SECTION 4 — JUSTIFICATION</h2>
+<div class="h-px bg-outline-variant/50 flex-grow"></div>
+</div>
+<label class="block text-label-md font-bold text-on-surface mb-3">Business Justification Statement</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="Why is this change necessary for operations? Describe the value proposition." rows="12" id="business_justification"></textarea>
+</section>
+<section class="bg-surface-container-lowest p-10 rounded-3xl border border-outline-variant/60 shadow-sm section-card" id="deliverables">
+<div class="flex items-center gap-5 mb-10">
+<h2 class="text-headline-md font-bold text-on-surface whitespace-nowrap">SECTION 5 — DELIVERABLES</h2>
+<div class="h-px bg-outline-variant/50 flex-grow"></div>
+</div>
+<div class="space-y-8">
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">Expected Deliverables</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="List software artifacts, reports, etc." rows="3" id="expected_deliverables"></textarea>
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">Success Criteria / Acceptance</label>
+<textarea class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 form-input-focus transition-all" placeholder="How will we know it's complete and correct?" rows="3" id="success_criteria"></textarea>
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface mb-2">Expected Deployment / Go-Live Date</label>
+<div class="relative">
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-3 pl-11 form-input-focus transition-all" placeholder="Timeline or specific date" type="date" id="deployment_date">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">event_available</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- SECTION 6: CLIENT CONFORMITY -->
+<section class="bg-surface-container-lowest p-10 rounded-3xl border border-outline-variant/60 shadow-sm section-card" id="final-approval">
+<div class="flex items-center gap-5 mb-6">
+<h2 class="text-headline-md font-bold text-on-surface whitespace-nowrap">SECTION 6 — CLIENT CONFORMITY</h2>
+<div class="h-px bg-outline-variant/50 flex-grow"></div>
+</div>
+<p class="text-body-md text-on-surface-variant mb-10 max-w-3xl">Complete internal sign-offs in order, then obtain client conforme. Each party should enter their details and apply a signature before the request proceeds.</p>
+<div class="mb-4">
+<h3 class="text-label-md font-bold text-on-surface-variant uppercase tracking-wider mb-6 flex items-center gap-2">
+<span class="w-2 h-2 bg-secondary rounded-full"></span>
+Internal Sign-Off
+</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+<fieldset class="flex flex-col rounded-2xl border border-outline-variant/50 bg-surface-container-low/20 overflow-hidden">
+<legend class="sr-only">Prepared By</legend>
+<div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-outline-variant/40 bg-surface-container-low/50">
+<div class="flex items-center gap-3 min-w-0">
+<span class="flex shrink-0 w-8 h-8 items-center justify-center rounded-lg bg-secondary/15 text-secondary text-label-md font-bold">1</span>
+<p class="text-body-md font-bold text-on-surface truncate">Prepared By</p>
+</div>
+</div>
+<div class="p-5 space-y-4 flex-1 flex flex-col signatory-box">
+<div class="sig-preview-wrap" id="sig1_preview">
+<span class="sig-placeholder">No signature uploaded</span>
+</div>
+<div>
+<label class="sig-upload-btn">
+<span class="material-symbols-outlined text-[14px]">attach_file</span> Upload Signature
+<input type="file" accept="image/*" onchange="loadSig(this, 'sig1')">
+</label>
+<button type="button" class="sig-clear-btn" id="sig1_clear" onclick="clearSig('sig1')">Clear</button>
+</div>
+<div class="space-y-3">
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Full Name</span>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="prepared_by_name" id="sig1_name" type="text" placeholder="Enter full name" autocomplete="name">
+</label>
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Position / Title</span>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="prepared_by_title" id="sig1_title" type="text" placeholder="e.g. Project Manager">
+</label>
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Date Signed</span>
+<div class="relative">
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 pl-11 form-input-focus transition-all" name="prepared_by_date" id="sig1_date" type="date">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">calendar_today</span>
+</div>
+</label>
+</div>
+<div class="signatory-line">Signature over Printed Name</div>
+</div>
+</fieldset>
+<fieldset class="flex flex-col rounded-2xl border border-outline-variant/50 bg-surface-container-low/20 overflow-hidden">
+<legend class="sr-only">Reviewed By</legend>
+<div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-outline-variant/40 bg-surface-container-low/50">
+<div class="flex items-center gap-3 min-w-0">
+<span class="flex shrink-0 w-8 h-8 items-center justify-center rounded-lg bg-secondary/15 text-secondary text-label-md font-bold">2</span>
+<p class="text-body-md font-bold text-on-surface truncate">Reviewed By</p>
+</div>
+</div>
+<div class="p-5 space-y-4 flex-1 flex flex-col signatory-box">
+<div class="sig-preview-wrap" id="sig2_preview">
+<span class="sig-placeholder">No signature uploaded</span>
+</div>
+<div>
+<label class="sig-upload-btn">
+<span class="material-symbols-outlined text-[14px]">attach_file</span> Upload Signature
+<input type="file" accept="image/*" onchange="loadSig(this, 'sig2')">
+</label>
+<button type="button" class="sig-clear-btn" id="sig2_clear" onclick="clearSig('sig2')">Clear</button>
+</div>
+<div class="space-y-3">
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Full Name</span>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="reviewed_by_name" id="sig2_name" type="text" placeholder="Enter full name" autocomplete="name">
+</label>
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Position / Title</span>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="reviewed_by_title" id="sig2_title" type="text" placeholder="e.g. Technical Lead">
+</label>
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Date Signed</span>
+<div class="relative">
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 pl-11 form-input-focus transition-all" name="reviewed_by_date" id="sig2_date" type="date">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">calendar_today</span>
+</div>
+</label>
+</div>
+<div class="signatory-line">Signature over Printed Name</div>
+</div>
+</fieldset>
+<fieldset class="flex flex-col rounded-2xl border border-outline-variant/50 bg-surface-container-low/20 overflow-hidden">
+<legend class="sr-only">Approved By</legend>
+<div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-outline-variant/40 bg-surface-container-low/50">
+<div class="flex items-center gap-3 min-w-0">
+<span class="flex shrink-0 w-8 h-8 items-center justify-center rounded-lg bg-secondary/15 text-secondary text-label-md font-bold">3</span>
+<p class="text-body-md font-bold text-on-surface truncate">Approved By</p>
+</div>
+</div>
+<div class="p-5 space-y-4 flex-1 flex flex-col signatory-box">
+<div class="sig-preview-wrap" id="sig3_preview">
+<span class="sig-placeholder">No signature uploaded</span>
+</div>
+<div>
+<label class="sig-upload-btn">
+<span class="material-symbols-outlined text-[14px]">attach_file</span> Upload Signature
+<input type="file" accept="image/*" onchange="loadSig(this, 'sig3')">
+</label>
+<button type="button" class="sig-clear-btn" id="sig3_clear" onclick="clearSig('sig3')">Clear</button>
+</div>
+<div class="space-y-3">
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Full Name</span>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="approved_by_name" id="sig3_name" type="text" placeholder="Enter full name" autocomplete="name">
+</label>
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Position / Title</span>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="approved_by_title" id="sig3_title" type="text" placeholder="e.g. Department Head">
+</label>
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Date Signed</span>
+<div class="relative">
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 pl-11 form-input-focus transition-all" name="approved_by_date" id="sig3_date" type="date">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">calendar_today</span>
+</div>
+</label>
+</div>
+<div class="signatory-line">Signature over Printed Name</div>
+</div>
+</fieldset>
+</div>
+</div>
+<div class="mt-10 pt-10 border-t border-outline-variant/40">
+<h3 class="text-label-md font-bold text-primary uppercase tracking-wider mb-6 flex items-center gap-2">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+Client Conforme
+</h3>
+<fieldset class="rounded-2xl border-2 border-primary/25 bg-primary/[0.04] overflow-hidden shadow-sm">
+<legend class="sr-only">Client Authorized Representative</legend>
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-5 border-b border-primary/15 bg-primary/5">
+<div class="flex items-center gap-3">
+<span class="flex shrink-0 w-9 h-9 items-center justify-center rounded-lg bg-primary text-on-primary text-label-md font-bold">4</span>
+<div>
+<p class="text-body-md font-bold text-on-surface">Authorized Representative</p>
+<p class="text-label-sm text-on-surface-variant mt-0.5">Client acknowledgment required to finalize this change request</p>
+</div>
+</div>
+<span class="self-start sm:self-center inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 text-label-sm font-bold text-primary uppercase tracking-wide">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+Required
+</span>
+</div>
+<div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8 signatory-box">
+<div class="space-y-4">
+<div class="sig-preview-wrap lg:min-h-[120px]" id="sig4_preview">
+<span class="sig-placeholder">No signature uploaded</span>
+</div>
+<div>
+<label class="sig-upload-btn">
+<span class="material-symbols-outlined text-[14px]">attach_file</span> Upload Signature
+<input type="file" accept="image/*" onchange="loadSig(this, 'sig4')">
+</label>
+<button type="button" class="sig-clear-btn" id="sig4_clear" onclick="clearSig('sig4')">Clear</button>
+</div>
+<div class="signatory-line">Signature over Printed Name</div>
+</div>
+<div class="space-y-3">
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Full Name</span>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="client_rep_name" id="sig4_name" type="text" placeholder="Client representative full name" autocomplete="name">
+</label>
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Position / Title</span>
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="client_rep_title" id="sig4_title" type="text" placeholder="Official designation">
+</label>
+<label class="block">
+<span class="block text-label-md font-bold text-on-surface mb-1.5">Date Signed</span>
+<div class="relative">
+<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 pl-11 form-input-focus transition-all" name="client_rep_date" id="sig4_date" type="date">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">calendar_today</span>
+</div>
+</label>
+</div>
+</div>
+</fieldset>
+</div>
+<div class="mt-10 p-6 bg-surface-container-low/40 rounded-2xl border border-outline-variant/30 flex gap-4 items-start">
+<span class="material-symbols-outlined text-primary/60 shrink-0 mt-0.5">verified_user</span>
+<p class="text-body-md text-on-surface-variant leading-relaxed">This document serves as the official client change request reference for all requested modifications. All signatures certify the requirements documented herein are complete and accurate as of the date of signing.</p>
+</div>
+</section>
+<!-- Sticky Footer Actions -->
+<div class="sticky bottom-8 z-40 flex items-center justify-between p-4 bg-surface-container-lowest/90 backdrop-blur-xl rounded-2xl border border-outline-variant/50 shadow-2xl">
+<div class="hidden sm:block pl-4">
+<span class="text-label-sm font-bold text-on-surface-variant uppercase tracking-widest">Last saved: 2 mins ago</span>
+</div>
+<div class="flex gap-4 w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-8 py-3.5 rounded-xl border border-outline-variant text-on-surface-variant font-bold hover:bg-surface-container-high transition-all" id="save-draft-btn" type="button">Save Draft</button>
+<button class="flex-1 sm:flex-none px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-bold hover:bg-primary/5 transition-all flex items-center justify-center gap-2" id="download-pdf-btn" type="button" onclick="generatePDF()">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span> Download Final PDF
+                            </button>
+<button class="flex-[2] sm:flex-none px-12 py-3.5 rounded-xl bg-primary text-on-primary font-bold hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center gap-2" id="submit-review-btn" type="submit">
+<span class="">Submit for Review</span>
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/30 mt-20">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-desktop max-w-max-width mx-auto py-10 gap-6">
+<div class="flex flex-col items-center md:items-start gap-2">
+<p class="text-label-sm font-bold text-on-surface-variant">© 2024 Prince Technologies Corporation.</p>
+<p class="text-[10px] font-medium text-on-surface-variant/60 uppercase tracking-widest">Systematic • Authoritative • Transparent</p>
+</div>
+<div class="flex gap-8">
+<a class="text-label-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-label-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-label-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#">Security Compliance</a>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<script>
+// ── Signature store (from Billable Approval Form) ─────────────────────────────
+const sigData = { sig1: null, sig2: null, sig3: null, sig4: null };
+
+function loadSig(input, key) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        sigData[key] = e.target.result;
+        const wrap = document.getElementById(key + '_preview');
+        wrap.innerHTML = `<img src="${e.target.result}" alt="signature">`;
+        document.getElementById(key + '_clear').style.display = 'inline-block';
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearSig(key) {
+    sigData[key] = null;
+    const wrap = document.getElementById(key + '_preview');
+    wrap.innerHTML = `<span class="sig-placeholder">No signature uploaded</span>`;
+    document.getElementById(key + '_clear').style.display = 'none';
+    const box = wrap.closest('.signatory-box');
+    const fi = box?.querySelector('input[type=file]');
+    if (fi) fi.value = '';
+}
+
+function getV(id) {
+    const el = document.getElementById(id);
+    return el ? (el.value || '').trim() : '';
+}
+
+function getPriority() {
+    const checked = document.querySelector('input[name="priority"]:checked');
+    if (!checked) return '—';
+    const label = checked.closest('label');
+    return label?.querySelector('div')?.textContent?.trim() || '—';
+}
+
+function getCheckedInGroup(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return '—';
+    const labels = Array.from(container.querySelectorAll('input[type=checkbox]:checked'))
+        .map(cb => cb.closest('label')?.querySelector('span')?.textContent?.trim() || '')
+        .filter(Boolean);
+    return labels.length ? labels.join(', ') : '—';
+}
+
+function getAttachmentNames() {
+    const input = document.getElementById('supporting-attachments-input');
+    if (!input?.files?.length) return '—';
+    return Array.from(input.files).map(f => f.name).join(', ');
+}
+
+function drawSignatoriesSection(doc, startY, colCount, signatories, pageWidth, sectionTitle) {
+    const boxH = 44;
+    const sigBlockH = boxH + 16;
+    let sigY = startY + 6;
+    if (sigY + sigBlockH > doc.internal.pageSize.height - 10) {
+        doc.addPage();
+        sigY = 15;
+    }
+
+    const margin = 14;
+    const contentW = pageWidth - 28;
+    doc.setFontSize(8);
+    doc.setFillColor(0, 61, 155);
+    doc.setTextColor(255, 255, 255);
+    doc.rect(margin, sigY, contentW, 6, 'F');
+    doc.text(sectionTitle || 'SIGNATORIES', pageWidth / 2, sigY + 4.2, { align: 'center' });
+    doc.setTextColor(0, 0, 0);
+    sigY += 8;
+
+    const colW = contentW / colCount;
+    const imgH = 16;
+    const imgW = 38;
+
+    signatories.forEach((s, i) => {
+        const x = margin + i * colW;
+        const cx = x + colW / 2;
+
+        doc.setDrawColor(180, 180, 180);
+        doc.setLineWidth(0.3);
+        doc.rect(x, sigY, colW - 2, boxH);
+
+        doc.setFontSize(7);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(0, 61, 155);
+        doc.text(s.label, cx, sigY + 5, { align: 'center' });
+
+        const imgAreaY = sigY + 8;
+        if (sigData[s.imgKey]) {
+            try {
+                const imgFmt = sigData[s.imgKey].indexOf('image/jpeg') !== -1 ? 'JPEG' : 'PNG';
+                doc.addImage(sigData[s.imgKey], imgFmt, cx - imgW / 2, imgAreaY, imgW, imgH, undefined, 'FAST');
+            } catch (e) {
+                doc.setDrawColor(100);
+                doc.line(cx - 25, imgAreaY + imgH, cx + 25, imgAreaY + imgH);
+            }
+        } else {
+            doc.setDrawColor(150, 150, 150);
+            doc.setLineDashPattern([1, 1], 0);
+            doc.rect(cx - imgW / 2, imgAreaY, imgW, imgH);
+            doc.setLineDashPattern([], 0);
+        }
+
+        const nameY = imgAreaY + imgH + 5;
+        doc.setFont(undefined, 'bold');
+        doc.setFontSize(7.5);
+        doc.setTextColor(0, 0, 0);
+        const nameVal = getV(s.nameId) || '_________________________';
+        const titleVal = getV(s.titleId) || '_________________________';
+        const dateVal = getV(s.dateId) || '';
+
+        doc.text(nameVal, cx, nameY, { align: 'center' });
+        doc.setFont(undefined, 'normal');
+        doc.setFontSize(6.5);
+        doc.text(titleVal, cx, nameY + 4, { align: 'center' });
+        if (dateVal) doc.text('Date: ' + dateVal, cx, nameY + 8, { align: 'center' });
+
+        doc.setFontSize(6);
+        doc.setTextColor(100, 100, 100);
+        doc.text('Signature over Printed Name', cx, sigY + boxH - 2, { align: 'center' });
+    });
+
+    return sigY + boxH + 6;
+}
+
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'legal');
+    const PW = doc.internal.pageSize.getWidth();
+    const headFill = [0, 61, 155];
+
+    doc.setFontSize(15);
+    doc.setTextColor(0, 61, 155);
+    doc.text('PRINCE TECHNOLOGIES CORPORATION', PW / 2, 13, { align: 'center' });
+    doc.setFontSize(9);
+    doc.text('PTC CHANGE REQUEST FORM (PTC-CRF-001 Rev. 3.0)', PW / 2, 19, { align: 'center' });
+
+    doc.autoTable({
+        startY: 24,
+        head: [['SECTION 1 — REQUEST INFORMATION', '']],
+        body: [
+            ['Request No.', getV('req_no')],
+            ['Date Submitted', getV('date_submitted')],
+            ['Target Completion Date', getV('target_completion')],
+            ['Client / Institution', getV('client_institution')],
+            ['Project / System Name', getV('project_name')],
+            ['Requested By', getV('requested_by')],
+            ['Department / Office', getV('department')],
+            ['Priority Level', getPriority()]
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: headFill },
+        columnStyles: { 0: { cellWidth: 55, fontStyle: 'bold' } },
+        styles: { fontSize: 8, overflow: 'linebreak' }
+    });
+
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 4,
+        head: [['SECTION 2 — CHANGE REQUEST SUMMARY']],
+        body: [
+            [{ content: 'Title of Request:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('cr_title')],
+            [{ content: 'Summary of Requested Enhancement / Change:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('cr_summary')],
+            [{ content: 'Reason for Request:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('cr_reason')],
+            [{ content: 'Requested Business Outcome:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('cr_outcome')]
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: headFill },
+        styles: { fontSize: 8, overflow: 'linebreak', cellPadding: 2 }
+    });
+
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 4,
+        head: [['SECTION 3 — SCOPE ASSESSMENT', '']],
+        body: [
+            ['A. Type of Request', getCheckedInGroup('request-type-group')],
+            ['B. Affected PRIISMS Modules', getCheckedInGroup('modules-group')],
+            [{ content: 'C. Functional Scope:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('functional_scope')],
+            [{ content: 'D. Technical Components / Integrations:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('technical_components')],
+            [{ content: 'E. Reports / Output Affected:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('reports_affected')],
+            [{ content: 'F. User Access / Stakeholders Affected:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('stakeholders_affected')],
+            [{ content: 'G. Risks / Dependencies:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('risks_dependencies')],
+            ['H. Supporting References / Attachments', getAttachmentNames()]
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: headFill },
+        columnStyles: { 0: { cellWidth: 55, fontStyle: 'bold' } },
+        styles: { fontSize: 8, overflow: 'linebreak', cellPadding: 2 }
+    });
+
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 4,
+        head: [['SECTION 4 — BUSINESS JUSTIFICATION']],
+        body: [[getV('business_justification') || '—']],
+        theme: 'grid',
+        headStyles: { fillColor: headFill },
+        styles: { fontSize: 8, overflow: 'linebreak', cellPadding: 2 }
+    });
+
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 4,
+        head: [['SECTION 5 — DELIVERABLES', '']],
+        body: [
+            [{ content: 'Expected Deliverables:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('expected_deliverables')],
+            [{ content: 'Success Criteria / Acceptance:', styles: { fontStyle: 'bold', fillColor: [235, 237, 239] } }],
+            [getV('success_criteria')],
+            ['Expected Deployment / Go-Live Date', getV('deployment_date')]
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: headFill },
+        columnStyles: { 0: { cellWidth: 55, fontStyle: 'bold' } },
+        styles: { fontSize: 8, overflow: 'linebreak', cellPadding: 2 }
+    });
+
+    const internalSignatories = [
+        { label: 'PREPARED BY', nameId: 'sig1_name', titleId: 'sig1_title', dateId: 'sig1_date', imgKey: 'sig1' },
+        { label: 'REVIEWED BY', nameId: 'sig2_name', titleId: 'sig2_title', dateId: 'sig2_date', imgKey: 'sig2' },
+        { label: 'APPROVED BY', nameId: 'sig3_name', titleId: 'sig3_title', dateId: 'sig3_date', imgKey: 'sig3' }
+    ];
+
+    let nextY = drawSignatoriesSection(doc, doc.lastAutoTable.finalY, 3, internalSignatories, PW, 'SECTION 6 — INTERNAL SIGN-OFF');
+
+    if (nextY + 50 > doc.internal.pageSize.height - 10) {
+        doc.addPage();
+        nextY = 15;
+    }
+
+    doc.autoTable({
+        startY: nextY,
+    });
+
+    const clientSignatories = [
+        { label: 'CLIENT AUTHORIZED REP.', nameId: 'sig4_name', titleId: 'sig4_title', dateId: 'sig4_date', imgKey: 'sig4' }
+    ];
+    drawSignatoriesSection(doc, doc.lastAutoTable.finalY, 1, clientSignatories, PW, 'CLIENT SIGNATURE');
+
+    doc.save('PTC_Change_Request_Form.pdf');
+}
+
+(() => {
+    const form = document.getElementById("change-request-form");
+    const supportTrigger = document.getElementById("supporting-attachments-trigger");
+    const supportInput = document.getElementById("supporting-attachments-input");
+    const supportList = document.getElementById("supporting-attachments-list");
+    const supportTitle = document.getElementById("supporting-attachments-title");
+    const saveDraftBtn = document.getElementById("save-draft-btn");
+
+    const updateFileListText = (node, files) => {
+        if (!files || !files.length) {
+            node.textContent = "No files selected.";
+            supportTitle.textContent = "Click to upload or drag files here";
+            return;
+        }
+        const names = Array.from(files).map((file) => file.name);
+        node.textContent = names.join(", ");
+        supportTitle.textContent = files.length === 1 ? names[0] : `${files.length} files selected`;
+    };
+
+    supportTrigger.addEventListener("click", () => supportInput.click());
+    supportInput.addEventListener("change", () => updateFileListText(supportList, supportInput.files));
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+        supportTrigger.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            supportTrigger.classList.add("drag-over");
+        });
+    });
+    ["dragleave", "drop"].forEach((eventName) => {
+        supportTrigger.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            supportTrigger.classList.remove("drag-over");
+        });
+    });
+    supportTrigger.addEventListener("drop", (event) => {
+        const files = event.dataTransfer?.files;
+        if (!files?.length) return;
+        supportInput.files = files;
+        updateFileListText(supportList, files);
+    });
+
+    saveDraftBtn.addEventListener("click", () => {
+        const data = Object.fromEntries(new FormData(form).entries());
+        data.supportingAttachments = Array.from(supportInput.files || []).map((file) => file.name);
+        data.signatures = {
+            sig1: !!sigData.sig1,
+            sig2: !!sigData.sig2,
+            sig3: !!sigData.sig3,
+            sig4: !!sigData.sig4
+        };
+        localStorage.setItem("ptc_crf_draft", JSON.stringify(data));
+        alert("Draft saved locally in this browser.");
+    });
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const required = [
+            "prepared_by_name", "reviewed_by_name", "approved_by_name", "client_rep_name",
+            "prepared_by_date", "reviewed_by_date", "approved_by_date", "client_rep_date"
+        ];
+        const missing = required.some((name) => !form.elements[name]?.value?.trim());
+        if (missing) {
+            alert("Please complete all required sign-off names and dates before submission.");
+            return;
+        }
+        alert("Change request submitted for review.");
+    });
+})();
+</script>
+</body></html>
