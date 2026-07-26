@@ -229,7 +229,7 @@
 <div class="flex items-center gap-stack-md">
 <button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full transition-colors">notifications</button>
 <button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full transition-colors">help</button>
-<button class="bg-primary text-on-primary px-6 py-2 rounded-lg text-label-md font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95">Submit New CR</button>
+<button id="new-crf-btn" class="bg-primary text-on-primary px-6 py-2 rounded-lg text-label-md font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95" type="button">Submit New CRF</button>
 </div>
 </div>
 </header>
@@ -307,7 +307,7 @@
 <div class="grid grid-cols-12 gap-x-8 gap-y-10">
 <div class="col-span-12 md:col-span-4">
 <label class="block text-label-md font-bold text-on-surface mb-2">Request No.</label>
-<input class="w-full border-outline-variant rounded-xl text-body-md font-medium px-4 py-3 form-input-focus" type="text" id="req_no" value="PTC-CRF-2024-089">
+<input class="w-full border-outline-variant rounded-xl text-body-md font-medium px-4 py-3 form-input-focus bg-surface-container-low" type="text" id="req_no" readonly>
 </div>
 <div class="col-span-12 md:col-span-4">
 <label class="block text-label-md font-bold text-on-surface mb-2">Date Submitted</label>
@@ -622,133 +622,8 @@
 <h2 class="text-headline-md font-bold text-on-surface whitespace-nowrap">SECTION 6 — CLIENT CONFORMITY</h2>
 <div class="h-px bg-outline-variant/50 flex-grow"></div>
 </div>
-<p class="text-body-md text-on-surface-variant mb-10 max-w-3xl">Complete internal sign-offs in order, then obtain client conforme. Each party should enter their details and apply a signature before the request proceeds.</p>
-<div class="mb-4">
-<h3 class="text-label-md font-bold text-on-surface-variant uppercase tracking-wider mb-6 flex items-center gap-2">
-<span class="w-2 h-2 bg-secondary rounded-full"></span>
-Internal Sign-Off
-</h3>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-<fieldset class="flex flex-col rounded-2xl border border-outline-variant/50 bg-surface-container-low/20 overflow-hidden">
-<legend class="sr-only">Prepared By</legend>
-<div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-outline-variant/40 bg-surface-container-low/50">
-<div class="flex items-center gap-3 min-w-0">
-<span class="flex shrink-0 w-8 h-8 items-center justify-center rounded-lg bg-secondary/15 text-secondary text-label-md font-bold">1</span>
-<p class="text-body-md font-bold text-on-surface truncate">Prepared By</p>
-</div>
-</div>
-<div class="p-5 space-y-4 flex-1 flex flex-col signatory-box">
-<div class="sig-preview-wrap" id="sig1_preview">
-<span class="sig-placeholder">No signature uploaded</span>
-</div>
-<div>
-<label class="sig-upload-btn">
-<span class="material-symbols-outlined text-[14px]">attach_file</span> Upload Signature
-<input type="file" accept="image/*" onchange="loadSig(this, 'sig1')">
-</label>
-<button type="button" class="sig-clear-btn" id="sig1_clear" onclick="clearSig('sig1')">Clear</button>
-</div>
-<div class="space-y-3">
-<label class="block">
-<span class="block text-label-md font-bold text-on-surface mb-1.5">Full Name</span>
-<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="prepared_by_name" id="sig1_name" type="text" placeholder="Enter full name" autocomplete="name">
-</label>
-<label class="block">
-<span class="block text-label-md font-bold text-on-surface mb-1.5">Position / Title</span>
-<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="prepared_by_title" id="sig1_title" type="text" placeholder="e.g. Project Manager">
-</label>
-<label class="block">
-<span class="block text-label-md font-bold text-on-surface mb-1.5">Date Signed</span>
-<div class="relative">
-<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 pl-11 form-input-focus transition-all" name="prepared_by_date" id="sig1_date" type="date">
-<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">calendar_today</span>
-</div>
-</label>
-</div>
-<div class="signatory-line">Signature over Printed Name</div>
-</div>
-</fieldset>
-<fieldset class="flex flex-col rounded-2xl border border-outline-variant/50 bg-surface-container-low/20 overflow-hidden">
-<legend class="sr-only">Reviewed By</legend>
-<div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-outline-variant/40 bg-surface-container-low/50">
-<div class="flex items-center gap-3 min-w-0">
-<span class="flex shrink-0 w-8 h-8 items-center justify-center rounded-lg bg-secondary/15 text-secondary text-label-md font-bold">2</span>
-<p class="text-body-md font-bold text-on-surface truncate">Reviewed By</p>
-</div>
-</div>
-<div class="p-5 space-y-4 flex-1 flex flex-col signatory-box">
-<div class="sig-preview-wrap" id="sig2_preview">
-<span class="sig-placeholder">No signature uploaded</span>
-</div>
-<div>
-<label class="sig-upload-btn">
-<span class="material-symbols-outlined text-[14px]">attach_file</span> Upload Signature
-<input type="file" accept="image/*" onchange="loadSig(this, 'sig2')">
-</label>
-<button type="button" class="sig-clear-btn" id="sig2_clear" onclick="clearSig('sig2')">Clear</button>
-</div>
-<div class="space-y-3">
-<label class="block">
-<span class="block text-label-md font-bold text-on-surface mb-1.5">Full Name</span>
-<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="reviewed_by_name" id="sig2_name" type="text" placeholder="Enter full name" autocomplete="name">
-</label>
-<label class="block">
-<span class="block text-label-md font-bold text-on-surface mb-1.5">Position / Title</span>
-<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="reviewed_by_title" id="sig2_title" type="text" placeholder="e.g. Technical Lead">
-</label>
-<label class="block">
-<span class="block text-label-md font-bold text-on-surface mb-1.5">Date Signed</span>
-<div class="relative">
-<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 pl-11 form-input-focus transition-all" name="reviewed_by_date" id="sig2_date" type="date">
-<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">calendar_today</span>
-</div>
-</label>
-</div>
-<div class="signatory-line">Signature over Printed Name</div>
-</div>
-</fieldset>
-<fieldset class="flex flex-col rounded-2xl border border-outline-variant/50 bg-surface-container-low/20 overflow-hidden">
-<legend class="sr-only">Approved By</legend>
-<div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-outline-variant/40 bg-surface-container-low/50">
-<div class="flex items-center gap-3 min-w-0">
-<span class="flex shrink-0 w-8 h-8 items-center justify-center rounded-lg bg-secondary/15 text-secondary text-label-md font-bold">3</span>
-<p class="text-body-md font-bold text-on-surface truncate">Approved By</p>
-</div>
-</div>
-<div class="p-5 space-y-4 flex-1 flex flex-col signatory-box">
-<div class="sig-preview-wrap" id="sig3_preview">
-<span class="sig-placeholder">No signature uploaded</span>
-</div>
-<div>
-<label class="sig-upload-btn">
-<span class="material-symbols-outlined text-[14px]">attach_file</span> Upload Signature
-<input type="file" accept="image/*" onchange="loadSig(this, 'sig3')">
-</label>
-<button type="button" class="sig-clear-btn" id="sig3_clear" onclick="clearSig('sig3')">Clear</button>
-</div>
-<div class="space-y-3">
-<label class="block">
-<span class="block text-label-md font-bold text-on-surface mb-1.5">Full Name</span>
-<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="approved_by_name" id="sig3_name" type="text" placeholder="Enter full name" autocomplete="name">
-</label>
-<label class="block">
-<span class="block text-label-md font-bold text-on-surface mb-1.5">Position / Title</span>
-<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 form-input-focus transition-all" name="approved_by_title" id="sig3_title" type="text" placeholder="e.g. Department Head">
-</label>
-<label class="block">
-<span class="block text-label-md font-bold text-on-surface mb-1.5">Date Signed</span>
-<div class="relative">
-<input class="w-full border-outline-variant rounded-xl text-body-md px-4 py-2.5 pl-11 form-input-focus transition-all" name="approved_by_date" id="sig3_date" type="date">
-<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">calendar_today</span>
-</div>
-</label>
-</div>
-<div class="signatory-line">Signature over Printed Name</div>
-</div>
-</fieldset>
-</div>
-</div>
-<div class="mt-10 pt-10 border-t border-outline-variant/40">
+<p class="text-body-md text-on-surface-variant mb-10 max-w-3xl">Review the request above, then provide the client's authorized signature below. Internal sign-off (Prepared / Reviewed / Approved) is completed separately on the downloaded PDF.</p>
+<div class="mt-2 pt-2">
 <h3 class="text-label-md font-bold text-primary uppercase tracking-wider mb-6 flex items-center gap-2">
 <span class="w-2 h-2 bg-primary rounded-full"></span>
 Client Conforme
@@ -814,13 +689,9 @@ Required
 </div>
 <div class="flex gap-4 w-full sm:w-auto">
 <button class="flex-1 sm:flex-none px-8 py-3.5 rounded-xl border border-outline-variant text-on-surface-variant font-bold hover:bg-surface-container-high transition-all" id="save-draft-btn" type="button">Save Draft</button>
-<button class="flex-1 sm:flex-none px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-bold hover:bg-primary/5 transition-all flex items-center justify-center gap-2" id="download-pdf-btn" type="button" onclick="generatePDF()">
+<button class="flex-[2] sm:flex-none px-12 py-3.5 rounded-xl bg-primary text-on-primary font-bold hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center gap-2" id="download-pdf-btn" type="button" onclick="generatePDF()">
 <span class="material-symbols-outlined text-[20px]">picture_as_pdf</span> Download Final PDF
                             </button>
-<button class="flex-[2] sm:flex-none px-12 py-3.5 rounded-xl bg-primary text-on-primary font-bold hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center gap-2" id="submit-review-btn" type="submit">
-<span class="">Submit for Review</span>
-<span class="material-symbols-outlined text-[20px]">send</span>
-</button>
 </div>
 </div>
 </form>
@@ -840,6 +711,17 @@ Required
 </div>
 </footer>
 </main>
+</div>
+<!-- Post-download notice: tells the person where to email the PDF -->
+<div id="download-notice" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] hidden max-w-lg w-[calc(100%-32px)]">
+<div class="bg-surface-container-lowest rounded-2xl shadow-2xl border border-primary/20 px-6 py-5 flex items-start gap-4">
+<span class="material-symbols-outlined text-primary text-[28px] shrink-0" style="font-variation-settings: 'FILL' 1;">mark_email_read</span>
+<div class="flex-1">
+<p class="text-body-md font-bold text-on-surface mb-1">PDF downloaded</p>
+<p class="text-body-md text-on-surface-variant">Please email the downloaded file to <span class="font-bold text-primary">dannyg@princetech.com.ph <br></span class="text-body-md text-on-surface-variant"> and CC the following: </span><br><span class="font-bold text-primary"> jvelasco@princetech.com.ph <br> kwahing@princetech.com.ph</span></span> for review.</p>
+</div>
+<button id="download-notice-close" type="button" class="material-symbols-outlined text-on-surface-variant p-1.5 hover:bg-surface-container-high rounded-full transition-colors shrink-0">close</button>
+</div>
 </div>
 <script>
 // ── Signature store (from Billable Approval Form) ─────────────────────────────
@@ -1069,7 +951,7 @@ function drawPtcSignoffSection(doc, sectionTitle, signatories, x, y, width, marg
     return Math.max(curY + rowH, maxBottom) + 6;
 }
 
-function generatePDF() {
+function buildPdfDocument() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'letter');
     const PW = doc.internal.pageSize.getWidth();
@@ -1128,11 +1010,15 @@ function generatePDF() {
     doc.setFontSize(7);
     doc.text('CORPORATION', textX, 15);
 
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(16);
     doc.setFont(undefined, 'bold');
     doc.text('CHANGE REQUEST FORM', PW - margin, 15, { align: 'right' });
-    
+    doc.setTextColor(...PTC_PRIMARY);
+    doc.setFontSize(8.5);
+    doc.setFont(undefined, 'bold');
+    doc.text('PTC-CRF-001 Rev. 3.0', PW - margin, 20.5, { align: 'right' });
+    doc.setTextColor(0, 0, 0);
 
     let y = 27;
 
@@ -1298,7 +1184,138 @@ function generatePDF() {
     }
 
     const fileName = (getV('req_no') || 'PTC_Change_Request_Form').replace(/[^a-zA-Z0-9._-]+/g, '_') + '.pdf';
+    return { doc, fileName };
+}
+
+// "Download Final PDF" button — build the doc, save it, then tell the
+// person where to send it.
+let downloadNoticeTimer = null;
+function generatePDF() {
+    const { doc, fileName } = buildPdfDocument();
     doc.save(fileName);
+    showDownloadNotice();
+}
+
+function showDownloadNotice() {
+    const notice = document.getElementById('download-notice');
+    if (!notice) return;
+    notice.classList.remove('hidden');
+    clearTimeout(downloadNoticeTimer);
+    downloadNoticeTimer = setTimeout(() => notice.classList.add('hidden'), 10000);
+}
+
+// =====================================================================
+// REQUEST NUMBER — unique per new request, stable across refreshes,
+// reused if a draft is loaded, only reset once a new CRF is started.
+// =====================================================================
+function pad3(n) {
+    return String(n).padStart(3, '0');
+}
+
+function getStoredCounter() {
+    return parseInt(localStorage.getItem('ptc_crf_counter') || '0', 10);
+}
+
+function generateRequestNumber() {
+    const year = new Date().getFullYear();
+    const counter = getStoredCounter() + 1;
+    localStorage.setItem('ptc_crf_counter', String(counter));
+    const number = `PTC-CRF-${year}-${pad3(counter)}`;
+    localStorage.setItem('ptc_crf_current_number', number);
+    return number;
+}
+
+function clearRequestNumberState() {
+    localStorage.removeItem('ptc_crf_current_number');
+    localStorage.removeItem('ptc_crf_draft');
+}
+
+function initRequestNumber() {
+    const reqNoEl = document.getElementById('req_no');
+    if (!reqNoEl) return;
+
+    // 1) A saved draft always wins — keep whatever number it was saved under.
+    const draftRaw = localStorage.getItem('ptc_crf_draft');
+    if (draftRaw) {
+        try {
+            const draft = JSON.parse(draftRaw);
+            if (draft.req_no) {
+                reqNoEl.value = draft.req_no;
+                return;
+            }
+        } catch (e) { /* ignore malformed draft */ }
+    }
+
+    // 2) An unsaved number already in progress this session (e.g. page refresh).
+    const current = localStorage.getItem('ptc_crf_current_number');
+    if (current) {
+        reqNoEl.value = current;
+        return;
+    }
+
+    // 3) Otherwise, mint a fresh, never-repeating number.
+    reqNoEl.value = generateRequestNumber();
+}
+
+// =====================================================================
+// "SUBMIT NEW CRF" — clears the form for a brand-new request and mints
+// a new, never-repeated request number.
+// =====================================================================
+function resetFormForNewCrf() {
+    const form = document.getElementById('change-request-form');
+    if (!form) return;
+
+    if (!confirm('Start a new CRF? This will clear everything currently in the form.')) {
+        return;
+    }
+
+    // Text/textarea/date fields
+    const textFieldIds = [
+        'client_institution', 'project_name', 'requested_by', 'department',
+        'target_completion', 'cr_title', 'cr_summary', 'cr_reason', 'cr_outcome',
+        'functional_scope', 'technical_components', 'reports_affected',
+        'stakeholders_affected', 'risks_dependencies', 'business_justification',
+        'expected_deliverables', 'success_criteria', 'deployment_date',
+        'client_rep_name', 'client_rep_title', 'client_rep_date'
+    ];
+    textFieldIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+
+    // Checkboxes (request type + affected modules)
+    form.querySelectorAll('#request-type-group input[type=checkbox], #modules-group input[type=checkbox]')
+        .forEach((cb) => { cb.checked = false; });
+
+    // Priority back to default (High)
+    form.querySelectorAll('input[name="priority"]').forEach((radio) => {
+        radio.checked = false;
+    });
+    const defaultPriority = form.querySelector('input[name="priority"][value="high"]')
+        || form.querySelectorAll('input[name="priority"]')[1];
+    if (defaultPriority) defaultPriority.checked = true;
+
+    // Attachments
+    const supportInput = document.getElementById('supporting-attachments-input');
+    const supportList = document.getElementById('supporting-attachments-list');
+    const supportTitle = document.getElementById('supporting-attachments-title');
+    if (supportInput) supportInput.value = '';
+    if (supportList) supportList.textContent = 'No files selected.';
+    if (supportTitle) supportTitle.textContent = 'Click to upload or drag files here';
+
+    // Client signature (the only signature still captured on the live form)
+    clearSig('sig4');
+
+    // Date submitted defaults to today
+    const dateSubmitted = document.getElementById('date_submitted');
+    if (dateSubmitted) dateSubmitted.value = new Date().toISOString().split('T')[0];
+
+    // Fresh, never-repeated request number
+    clearRequestNumberState();
+    const reqNoEl = document.getElementById('req_no');
+    if (reqNoEl) reqNoEl.value = generateRequestNumber();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 (() => {
@@ -1308,6 +1325,10 @@ function generatePDF() {
     const supportList = document.getElementById("supporting-attachments-list");
     const supportTitle = document.getElementById("supporting-attachments-title");
     const saveDraftBtn = document.getElementById("save-draft-btn");
+    const newCrfBtn = document.getElementById("new-crf-btn");
+    const downloadNoticeClose = document.getElementById("download-notice-close");
+
+    initRequestNumber();
 
     const updateFileListText = (node, files) => {
         if (!files || !files.length) {
@@ -1344,6 +1365,7 @@ function generatePDF() {
 
     saveDraftBtn.addEventListener("click", () => {
         const data = Object.fromEntries(new FormData(form).entries());
+        data.req_no = getV('req_no');
         data.supportingAttachments = Array.from(supportInput.files || []).map((file) => file.name);
         data.signatures = {
             sig1: !!sigData.sig1,
@@ -1355,18 +1377,9 @@ function generatePDF() {
         alert("Draft saved locally in this browser.");
     });
 
-    form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const required = [
-            "prepared_by_name", "reviewed_by_name", "approved_by_name", "client_rep_name",
-            "prepared_by_date", "reviewed_by_date", "approved_by_date", "client_rep_date"
-        ];
-        const missing = required.some((name) => !form.elements[name]?.value?.trim());
-        if (missing) {
-            alert("Please complete all required sign-off names and dates before submission.");
-            return;
-        }
-        alert("Change request submitted for review.");
+    newCrfBtn?.addEventListener("click", resetFormForNewCrf);
+    downloadNoticeClose?.addEventListener("click", () => {
+        document.getElementById('download-notice')?.classList.add('hidden');
     });
 })();
 </script>
