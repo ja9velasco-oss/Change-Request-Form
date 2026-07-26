@@ -6,6 +6,7 @@
 <title>PTC Change Portal | Change Request Form</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
@@ -718,7 +719,7 @@ Required
 <span class="material-symbols-outlined text-primary text-[28px] shrink-0" style="font-variation-settings: 'FILL' 1;">mark_email_read</span>
 <div class="flex-1">
 <p class="text-body-md font-bold text-on-surface mb-1">PDF downloaded</p>
-<p class="text-body-md text-on-surface-variant">Please email the downloaded file to <span class="font-bold text-primary">dannyg@princetech.com.ph <br></span class="text-body-md text-on-surface-variant"> and CC the following: </span><br><span class="font-bold text-primary"> jvelasco@princetech.com.ph <br> kwahing@princetech.com.ph</span></span> for review.</p>
+<p class="text-body-md text-on-surface-variant" data-notice-message>Please email the downloaded file to <span class="font-bold text-primary">dannyg@princetech.com.ph</span> and CC <span class="font-bold text-primary">jvelasco@princetech.com.ph</span> and <span class="font-bold text-primary">kwahing@princetech.com.ph</span> for review.</p>
 </div>
 <button id="download-notice-close" type="button" class="material-symbols-outlined text-on-surface-variant p-1.5 hover:bg-surface-container-high rounded-full transition-colors shrink-0">close</button>
 </div>
@@ -1187,18 +1188,73 @@ function buildPdfDocument() {
     return { doc, fileName };
 }
 
-// "Download Final PDF" button — build the doc, save it, then tell the
-// person where to send it.
+// "Download Final PDF" button — build the doc, then either save it alone
+// (no supporting files attached) or bundle it with the client's attached
+// files into one ZIP (since those files were never actually captured
+// anywhere before — only their names were printed in the PDF as text).
 let downloadNoticeTimer = null;
-function generatePDF() {
+async function generatePDF() {
     const { doc, fileName } = buildPdfDocument();
-    doc.save(fileName);
-    showDownloadNotice();
+    const supportInput = document.getElementById('supporting-attachments-input');
+    const attachedFiles = Array.from(supportInput?.files || []);
+
+    if (!attachedFiles.length) {
+        doc.save(fileName);
+        showDownloadNotice(false);
+        return;
+    }
+
+    const confirmBtn = document.getElementById('download-pdf-btn');
+    const originalLabel = confirmBtn ? confirmBtn.innerHTML : null;
+    if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Packaging…';
+    }
+
+    try {
+        const zip = new JSZip();
+        zip.file(fileName, doc.output('blob'));
+
+        const attachmentsFolder = zip.folder('Supporting Attachments');
+        for (const file of attachedFiles) {
+            attachmentsFolder.file(file.name, file);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const zipName = fileName.replace(/\.pdf$/i, '') + '_with_attachments.zip';
+
+        const url = URL.createObjectURL(zipBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = zipName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 3000);
+
+        showDownloadNotice(true);
+    } catch (err) {
+        console.error('Failed to bundle attachments into ZIP:', err);
+        alert('Could not bundle the supporting attachments (' + err.message + '). Downloading the PDF alone instead — please attach the supporting files separately.');
+        doc.save(fileName);
+        showDownloadNotice(false);
+    } finally {
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = originalLabel;
+        }
+    }
 }
 
-function showDownloadNotice() {
+function showDownloadNotice(isZip) {
     const notice = document.getElementById('download-notice');
     if (!notice) return;
+    const message = notice.querySelector('[data-notice-message]');
+    if (message) {
+        message.innerHTML = isZip
+            ? 'Please email the downloaded ZIP (PDF + supporting attachments) to <span class="font-bold text-primary">dannyg@princetech.com.ph</span> and CC <span class="font-bold text-primary">jvelasco@princetech.com.ph</span> and <span class="font-bold text-primary">kwahing@princetech.com.ph</span> for review.'
+            : 'Please email the downloaded file to <span class="font-bold text-primary">dannyg@princetech.com.ph</span> and CC <span class="font-bold text-primary">jvelasco@princetech.com.ph</span> and <span class="font-bold text-primary">kwahing@princetech.com.ph</span> for review.';
+    }
     notice.classList.remove('hidden');
     clearTimeout(downloadNoticeTimer);
     downloadNoticeTimer = setTimeout(() => notice.classList.add('hidden'), 10000);
