@@ -691,7 +691,7 @@ Required
 <div class="flex gap-4 w-full sm:w-auto">
 <button class="flex-1 sm:flex-none px-8 py-3.5 rounded-xl border border-outline-variant text-on-surface-variant font-bold hover:bg-surface-container-high transition-all" id="save-draft-btn" type="button">Save Draft</button>
 <button class="flex-[2] sm:flex-none px-12 py-3.5 rounded-xl bg-primary text-on-primary font-bold hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center gap-2" id="download-pdf-btn" type="button" onclick="generatePDF()">
-<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span> Download Final PDF
+<span class="material-symbols-outlined text-[20px]">send</span> Download &amp; Email CRF
                             </button>
 </div>
 </div>
@@ -1188,61 +1188,119 @@ function buildPdfDocument() {
     return { doc, fileName };
 }
 
-// "Download Final PDF" button — build the doc, then either save it alone
-// (no supporting files attached) or bundle it with the client's attached
-// files into one ZIP (since those files were never actually captured
-// anywhere before — only their names were printed in the PDF as text).
+// "Download & Email CRF" button — build the doc (bundling in a ZIP with
+// any supporting attachments), download a local copy, then attempt to
+// email it automatically via the deployed Apps Script Web App below.
+// Paste the deployed Web App URL here (see Code.gs, provided separately).
+const CHANGE_REQUEST_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzyjRqgq2DXzCTgan5axKGNP2F12qTe9YBkrItRtLl_owumNhYrp8Yb7tNba_wgfwF52A/exec';
+
 let downloadNoticeTimer = null;
+
+function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(String(reader.result).split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+function setDownloadBtnState(label) {
+    const btn = document.getElementById('download-pdf-btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = label; }
+}
+
+function resetDownloadBtnState(originalLabel) {
+    const btn = document.getElementById('download-pdf-btn');
+    if (btn) { btn.disabled = false; btn.innerHTML = originalLabel; }
+}
+
 async function generatePDF() {
+    const btn = document.getElementById('download-pdf-btn');
+    const originalLabel = btn ? btn.innerHTML : null;
+
     const { doc, fileName } = buildPdfDocument();
     const supportInput = document.getElementById('supporting-attachments-input');
     const attachedFiles = Array.from(supportInput?.files || []);
 
-    if (!attachedFiles.length) {
-        doc.save(fileName);
-        showDownloadNotice(false);
+    let finalBlob = doc.output('blob');
+    let finalFileName = fileName;
+    let mimeType = 'application/pdf';
+
+    // Bundle in a ZIP if there are supporting attachments to carry along.
+    if (attachedFiles.length) {
+        setDownloadBtnState('<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Packaging…');
+        try {
+            const zip = new JSZip();
+            zip.file(fileName, finalBlob);
+            const attachmentsFolder = zip.folder('Supporting Attachments');
+            for (const file of attachedFiles) {
+                attachmentsFolder.file(file.name, file);
+            }
+            finalBlob = await zip.generateAsync({ type: 'blob' });
+            finalFileName = fileName.replace(/\.pdf$/i, '') + '_with_attachments.zip';
+            mimeType = 'application/zip';
+        } catch (err) {
+            console.error('Failed to bundle attachments into ZIP:', err);
+            alert('Could not bundle the supporting attachments (' + err.message + '). Continuing with the PDF alone — please attach the supporting files separately.');
+            finalBlob = doc.output('blob');
+            finalFileName = fileName;
+            mimeType = 'application/pdf';
+        }
+    }
+
+    // Always keep a local copy for the person's own records.
+    const localUrl = URL.createObjectURL(finalBlob);
+    const link = document.createElement('a');
+    link.href = localUrl;
+    link.download = finalFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(localUrl), 3000);
+
+    // If the Apps Script backend hasn't been configured yet, fall back
+    // to the manual-email notice instead of trying to call it.
+    if (!CHANGE_REQUEST_APPS_SCRIPT_URL || CHANGE_REQUEST_APPS_SCRIPT_URL.indexOf('PASTE_YOUR') === 0) {
+        showDownloadNotice(finalFileName.toLowerCase().endsWith('.zip'));
+        resetDownloadBtnState(originalLabel);
         return;
     }
 
-    const confirmBtn = document.getElementById('download-pdf-btn');
-    const originalLabel = confirmBtn ? confirmBtn.innerHTML : null;
-    if (confirmBtn) {
-        confirmBtn.disabled = true;
-        confirmBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Packaging…';
-    }
-
+    setDownloadBtnState('<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Sending…');
     try {
-        const zip = new JSZip();
-        zip.file(fileName, doc.output('blob'));
+        const fileBase64 = await blobToBase64(finalBlob);
+        const payload = {
+            requestNo: getV('req_no'),
+            fileName: finalFileName,
+            mimeType: mimeType,
+            client: getV('client_institution') || '—',
+            project: getV('project_name') || '—',
+            requestedBy: getV('requested_by') || '—',
+            priority: getPriority(),
+            fileBase64: fileBase64
+        };
 
-        const attachmentsFolder = zip.folder('Supporting Attachments');
-        for (const file of attachedFiles) {
-            attachmentsFolder.file(file.name, file);
+        // Plain string body keeps this a "simple request" so the browser
+        // skips a CORS preflight — Apps Script web apps don't handle
+        // OPTIONS preflight requests.
+        const response = await fetch(CHANGE_REQUEST_APPS_SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        if (!result.success) {
+            throw new Error(result.error || 'Unknown error from Apps Script');
         }
 
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        const zipName = fileName.replace(/\.pdf$/i, '') + '_with_attachments.zip';
-
-        const url = URL.createObjectURL(zipBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = zipName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 3000);
-
-        showDownloadNotice(true);
+        clearRequestNumberState();
+        alert('A local copy was downloaded, and the change request was emailed to dannyg@princetech.com.ph (CC jvelasco@princetech.com.ph, kwahing@princetech.com.ph).');
     } catch (err) {
-        console.error('Failed to bundle attachments into ZIP:', err);
-        alert('Could not bundle the supporting attachments (' + err.message + '). Downloading the PDF alone instead — please attach the supporting files separately.');
-        doc.save(fileName);
-        showDownloadNotice(false);
+        console.error('Failed to auto-send change request email:', err);
+        showDownloadNotice(finalFileName.toLowerCase().endsWith('.zip'));
     } finally {
-        if (confirmBtn) {
-            confirmBtn.disabled = false;
-            confirmBtn.innerHTML = originalLabel;
-        }
+        resetDownloadBtnState(originalLabel);
     }
 }
 
