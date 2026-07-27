@@ -308,7 +308,7 @@
 <div class="grid grid-cols-12 gap-x-8 gap-y-10">
 <div class="col-span-12 md:col-span-4">
 <label class="block text-label-md font-bold text-on-surface mb-2">Request No.</label>
-<input class="w-full border-outline-variant rounded-xl text-body-md font-medium px-4 py-3 form-input-focus bg-surface-container-low" type="text" id="req_no" readonly>
+<input class="w-full border-outline-variant rounded-xl text-body-md font-medium px-4 py-3 form-input-focus bg-surface-container-low" type="text" id="req_no" readonly placeholder="Will be assigned on submission">
 </div>
 <div class="col-span-12 md:col-span-4">
 <label class="block text-label-md font-bold text-on-surface mb-2">Date Submitted</label>
@@ -1219,6 +1219,9 @@ async function generatePDF() {
     const btn = document.getElementById('download-pdf-btn');
     const originalLabel = btn ? btn.innerHTML : null;
 
+    setDownloadBtnState('<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Assigning number…');
+    await ensureRequestNumberAssigned();
+
     const { doc, fileName } = buildPdfDocument();
     const supportInput = document.getElementById('supporting-attachments-input');
     const attachedFiles = Array.from(supportInput?.files || []);
@@ -1343,6 +1346,15 @@ function generateLocalFallbackRequestNumber() {
     return number;
 }
 
+// A real, already-assigned request number always looks like this.
+// Anything else in the field (placeholder text) means "not yet assigned."
+const REQUEST_NUMBER_PATTERN = /^PTC-CRF-\d{4}-\d+$/;
+const REQUEST_NUMBER_PLACEHOLDER = 'Will be assigned on submission';
+
+function isRequestNumberAssigned(value) {
+    return REQUEST_NUMBER_PATTERN.test((value || '').trim());
+}
+
 async function generateRequestNumber() {
     const scriptConfigured = CHANGE_REQUEST_APPS_SCRIPT_URL
         && CHANGE_REQUEST_APPS_SCRIPT_URL.indexOf('PASTE_YOUR') !== 0;
@@ -1364,38 +1376,57 @@ async function generateRequestNumber() {
     return generateLocalFallbackRequestNumber();
 }
 
+// Called right before a PDF/ZIP is actually built and sent — this is the
+// one and only moment a request "becomes official." If a number was
+// already assigned earlier in this session (e.g. re-downloading the same
+// request after a first send), it's reused rather than minting a new one.
+async function ensureRequestNumberAssigned() {
+    const reqNoEl = document.getElementById('req_no');
+    if (!reqNoEl) return '';
+
+    if (isRequestNumberAssigned(reqNoEl.value)) {
+        return reqNoEl.value.trim();
+    }
+
+    reqNoEl.value = 'Assigning…';
+    const number = await generateRequestNumber();
+    reqNoEl.value = number;
+    return number;
+}
+
 function clearRequestNumberState() {
     localStorage.removeItem('ptc_crf_current_number');
     localStorage.removeItem('ptc_crf_draft');
 }
 
-async function initRequestNumber() {
+function initRequestNumber() {
     const reqNoEl = document.getElementById('req_no');
     if (!reqNoEl) return;
 
-    // 1) A saved draft always wins — keep whatever number it was saved under.
+    // 1) A saved draft that already has a real, assigned number (i.e. it
+    // was submitted once before and is being reopened) — keep it.
     const draftRaw = localStorage.getItem('ptc_crf_draft');
     if (draftRaw) {
         try {
             const draft = JSON.parse(draftRaw);
-            if (draft.req_no) {
+            if (isRequestNumberAssigned(draft.req_no)) {
                 reqNoEl.value = draft.req_no;
                 return;
             }
         } catch (e) { /* ignore malformed draft */ }
     }
 
-    // 2) An unsaved number already in progress this session (e.g. page refresh).
+    // 2) A number already assigned earlier this session (e.g. a refresh
+    // after already submitting once) — keep it, don't mint a new one.
     const current = localStorage.getItem('ptc_crf_current_number');
-    if (current) {
+    if (isRequestNumberAssigned(current)) {
         reqNoEl.value = current;
         return;
     }
 
-    // 3) Otherwise, mint a fresh, never-repeating number from the shared
-    // server counter (or the local fallback if that's unavailable).
-    reqNoEl.value = 'Generating…';
-    reqNoEl.value = await generateRequestNumber();
+    // 3) Otherwise, this is an unsubmitted draft — no number yet. One will
+    // only be assigned at the moment the request is actually sent.
+    reqNoEl.value = REQUEST_NUMBER_PLACEHOLDER;
 }
 
 // =====================================================================
@@ -1451,13 +1482,10 @@ async function resetFormForNewCrf() {
     const dateSubmitted = document.getElementById('date_submitted');
     if (dateSubmitted) dateSubmitted.value = new Date().toISOString().split('T')[0];
 
-    // Fresh, never-repeated request number
+    // No number yet — this new CRF won't get one until it's actually submitted
     clearRequestNumberState();
     const reqNoEl = document.getElementById('req_no');
-    if (reqNoEl) {
-        reqNoEl.value = 'Generating…';
-        reqNoEl.value = await generateRequestNumber();
-    }
+    if (reqNoEl) reqNoEl.value = REQUEST_NUMBER_PLACEHOLDER;
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1527,4 +1555,5 @@ async function resetFormForNewCrf() {
     });
 })();
 </script>
-</body></html>
+</body>
+</html>
