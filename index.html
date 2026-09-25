@@ -690,8 +690,11 @@ Required
 </div>
 <div class="flex gap-4 w-full sm:w-auto">
 <button class="flex-1 sm:flex-none px-8 py-3.5 rounded-xl border border-outline-variant text-on-surface-variant font-bold hover:bg-surface-container-high transition-all" id="save-draft-btn" type="button">Save Draft</button>
-<button class="flex-[2] sm:flex-none px-12 py-3.5 rounded-xl bg-primary text-on-primary font-bold hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center gap-2" id="download-pdf-btn" type="button" onclick="generatePDF()">
-<span class="material-symbols-outlined text-[20px]">send</span> Download &amp; Email CRF
+<button class="flex-1 sm:flex-none px-8 py-3.5 rounded-xl border border-primary text-primary font-bold hover:bg-primary-container/20 transition-all active:scale-95 flex items-center justify-center gap-2" id="download-pdf-btn" type="button" onclick="downloadCRF()">
+<span class="material-symbols-outlined text-[20px]">download</span> Download CRF
+                            </button>
+<button class="flex-[2] sm:flex-none px-12 py-3.5 rounded-xl bg-primary text-on-primary font-bold hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center gap-2" id="email-pdf-btn" type="button" onclick="emailCRF()">
+<span class="material-symbols-outlined text-[20px]">send</span> Email CRF
                             </button>
 </div>
 </div>
@@ -1011,15 +1014,14 @@ function buildPdfDocument() {
     doc.setFontSize(7);
     doc.text('CORPORATION', textX, 15);
 
-    doc.setTextColor(0, 0, 0);
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
     doc.setFont(undefined, 'bold');
     doc.text('CHANGE REQUEST FORM', PW - margin, 15, { align: 'right' });
-    doc.setTextColor(...PTC_PRIMARY);
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(8.5);
     doc.setFont(undefined, 'bold');
-    doc.text('PTC-CRF-001 Rev. 3.0', PW - margin, 20.5, { align: 'right' });
-    doc.setTextColor(0, 0, 0);
+    
 
     let y = 27;
 
@@ -1188,8 +1190,8 @@ function buildPdfDocument() {
     return { doc, fileName };
 }
 
-// "Download & Email CRF" button — build the doc (bundling in a ZIP with
-// any supporting attachments), download a local copy, then attempt to
+// "Download CRF" and "Email CRF" buttons — build the doc (bundling in a
+// ZIP with any supporting attachments), then either save it locally or
 // email it automatically via the deployed Apps Script Web App below.
 // Paste the deployed Web App URL here (see Code.gs, provided separately).
 const CHANGE_REQUEST_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzyjRqgq2DXzCTgan5axKGNP2F12qTe9YBkrItRtLl_owumNhYrp8Yb7tNba_wgfwF52A/exec';
@@ -1205,23 +1207,20 @@ function blobToBase64(blob) {
     });
 }
 
-function setDownloadBtnState(label) {
-    const btn = document.getElementById('download-pdf-btn');
+function setBtnState(btnId, label) {
+    const btn = document.getElementById(btnId);
     if (btn) { btn.disabled = true; btn.innerHTML = label; }
 }
 
-function resetDownloadBtnState(originalLabel) {
-    const btn = document.getElementById('download-pdf-btn');
+function resetBtnState(btnId, originalLabel) {
+    const btn = document.getElementById(btnId);
     if (btn) { btn.disabled = false; btn.innerHTML = originalLabel; }
 }
 
-async function generatePDF() {
-    const btn = document.getElementById('download-pdf-btn');
-    const originalLabel = btn ? btn.innerHTML : null;
-
-    setDownloadBtnState('<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Assigning number…');
-    await ensureRequestNumberAssigned();
-
+// Builds the final PDF (or ZIP, if there are supporting attachments) that
+// both the "Download CRF" and "Email CRF" buttons send/save. Shared so the
+// two actions always produce an identical file.
+async function buildFinalDocument(btnId) {
     const { doc, fileName } = buildPdfDocument();
     const supportInput = document.getElementById('supporting-attachments-input');
     const attachedFiles = Array.from(supportInput?.files || []);
@@ -1232,7 +1231,7 @@ async function generatePDF() {
 
     // Bundle in a ZIP if there are supporting attachments to carry along.
     if (attachedFiles.length) {
-        setDownloadBtnState('<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Packaging…');
+        setBtnState(btnId, '<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Packaging…');
         try {
             const zip = new JSZip();
             zip.file(fileName, finalBlob);
@@ -1252,7 +1251,10 @@ async function generatePDF() {
         }
     }
 
-    // Always keep a local copy for the person's own records.
+    return { finalBlob, finalFileName, mimeType };
+}
+
+function saveBlobLocally(finalBlob, finalFileName) {
     const localUrl = URL.createObjectURL(finalBlob);
     const link = document.createElement('a');
     link.href = localUrl;
@@ -1261,16 +1263,50 @@ async function generatePDF() {
     link.click();
     document.body.removeChild(link);
     setTimeout(() => URL.revokeObjectURL(localUrl), 3000);
+}
+
+// "Download CRF" button — builds the doc and saves it locally only.
+// No email is sent.
+async function downloadCRF() {
+    const btnId = 'download-pdf-btn';
+    const btn = document.getElementById(btnId);
+    const originalLabel = btn ? btn.innerHTML : null;
+
+    setBtnState(btnId, '<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Assigning number…');
+    await ensureRequestNumberAssigned();
+
+    const { finalBlob, finalFileName } = await buildFinalDocument(btnId);
+    saveBlobLocally(finalBlob, finalFileName);
+
+    resetBtnState(btnId, originalLabel);
+}
+
+// "Email CRF" button — builds the doc and emails it automatically via the
+// deployed Apps Script Web App above, without downloading a local copy.
+// If the backend isn't configured or the send fails, falls back to
+// downloading the file and showing the manual-email notice so the person
+// still has a way to get it sent.
+async function emailCRF() {
+    const btnId = 'email-pdf-btn';
+    const btn = document.getElementById(btnId);
+    const originalLabel = btn ? btn.innerHTML : null;
+
+    setBtnState(btnId, '<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Assigning number…');
+    await ensureRequestNumberAssigned();
+
+    const { finalBlob, finalFileName, mimeType } = await buildFinalDocument(btnId);
 
     // If the Apps Script backend hasn't been configured yet, fall back
-    // to the manual-email notice instead of trying to call it.
+    // to downloading the file plus the manual-email notice instead of
+    // trying to call it.
     if (!CHANGE_REQUEST_APPS_SCRIPT_URL || CHANGE_REQUEST_APPS_SCRIPT_URL.indexOf('PASTE_YOUR') === 0) {
+        saveBlobLocally(finalBlob, finalFileName);
         showDownloadNotice(finalFileName.toLowerCase().endsWith('.zip'));
-        resetDownloadBtnState(originalLabel);
+        resetBtnState(btnId, originalLabel);
         return;
     }
 
-    setDownloadBtnState('<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Sending…');
+    setBtnState(btnId, '<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Sending…');
     try {
         const fileBase64 = await blobToBase64(finalBlob);
         const payload = {
@@ -1298,12 +1334,13 @@ async function generatePDF() {
         }
 
         clearRequestNumberState();
-        alert('A local copy was downloaded, and the change request was emailed to dannyg@princetech.com.ph (CC jvelasco@princetech.com.ph, kwahing@princetech.com.ph).');
+        alert('The change request was emailed to dannyg@princetech.com.ph (CC jvelasco@princetech.com.ph, kwahing@princetech.com.ph).');
     } catch (err) {
         console.error('Failed to auto-send change request email:', err);
+        saveBlobLocally(finalBlob, finalFileName);
         showDownloadNotice(finalFileName.toLowerCase().endsWith('.zip'));
     } finally {
-        resetDownloadBtnState(originalLabel);
+        resetBtnState(btnId, originalLabel);
     }
 }
 
