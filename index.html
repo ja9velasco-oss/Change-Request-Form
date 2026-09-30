@@ -516,7 +516,7 @@
 </label>
 <label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
 <input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
-<span class="group-hover:text-primary transition-colors">Student Affair</span>
+<span class="group-hover:text-primary transition-colors">Student Affairs</span>
 </label>
 <label class="flex items-center gap-3.5 text-body-md font-medium text-on-surface-variant cursor-pointer group">
 <input class="w-5 h-5 rounded-md text-primary focus:ring-primary border-outline-variant cursor-pointer" type="checkbox">
@@ -932,7 +932,7 @@ function drawPtcSignatory(doc, s, x, colW, y) {
 // navy section header followed by one or more signatory columns,
 // optionally centered/narrowed for the single-column client block.
 function drawPtcSignoffSection(doc, sectionTitle, signatories, x, y, width, marginBottomLimit, centerWidth) {
-    const rowH = 46;
+    const rowH = 54;
     if (y + 7 + 4 + rowH > marginBottomLimit) {
         doc.addPage();
         y = 18;
